@@ -1,0 +1,57 @@
+﻿@using PunjabiHutProject.Models;
+@{
+    Model1 db = new Model1();
+    Customer c = (Customer) Session["Customer"];
+    int no = 0;
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+    ViewBag.Title = "Order History";
+}
+
+
+<center>
+    <h1>Order History</h1>
+</center>
+
+<table class=" table table-bordered table-hover">
+    <tr style="background-color:indianred; color:white">
+        <th>Sr#</th>
+        <th>Order Number</th>
+        <th>Order Date</th>
+        <th>Costumer Name</th>
+        <th>Costumer Email</th>
+        <th>Costumer Address</th>
+        <th>Costumer Contact</th>
+        <th>Order Status</th>
+        <th align="center" colspan="2">Action</th>
+
+    </tr>
+
+    @foreach (var o in db.Orders.Where(x=>x.ORDER_TYPE=="Sale" & x.STATUS =="Active"))
+
+    {
+        if (o.CUSTOMER_FID == c.CUSTOMER_ID)
+        {
+            no++;
+<tr>
+    <td align="center">@no</td>
+    <td align="center">@o.ORDER_ID</td>
+    <td align="center">@DateTime.Parse(o.ORDER_DATE.ToString()).ToLongDateString()</td>
+    <td align="center">@o.ORDER_NAME</td>
+    <td align="center">@o.ORDER_EMAIL</td>
+    <td align="center">@o.ORDER_ADDRESS</td>
+    <td align="center">@o.ORDER_CONTACT</td>
+    <td align="center">@o.ORDER_STATUS</td>
+    <td align="center"><a href="@Url.Action("OrderCancellation", "Customers", new { id = o.ORDER_ID })" class="btn btn-danger">Cancel Order</a></td>
+    <td align="center"><a href="@Url.Action("Invoice", "Customers", new { id = o.ORDER_ID })" class="ml-auto btn hvr-hover">View Invoice</a></td>
+
+</tr>
+
+        }
+
+    }
+
+</table>
+
+
+
+

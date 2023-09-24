@@ -1,0 +1,167 @@
+﻿@using PunjabiHutProject.Models
+
+@{
+    int row = 0;
+    int totalQty = 0;
+    decimal totalBill = 0;
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<!-- Start All Title Box -->
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <h2>Purchases Made Successfully.</h2>
+               
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End All Title Box -->
+<!-- Start Cart  -->
+<div class="cart-box-main">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="table-main table-responsive">
+                    <table class="table table-bordered table-dark table-hover">
+                        <thead>
+                            <tr  align="center" style="background-color:indianred;color:white">
+                                <th>Images</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            @if (Session["myCart"] != null)
+                            {
+
+                                foreach (var item in (List<Product>)Session["myCart"])
+                                {
+                                    <tr>
+                                        <td class="thumbnail-img">
+                                            <a href="#">
+                                                <img class="img-fluid" src="@Url.Content(item.PRODUCT_PICTURE)" style="height:100px; width:100px" alt="" />
+                                            </a>
+                                        </td>
+                                        <td class="name-pr">
+                                            <a href="#" style="color:black">
+                                                @item.PRODUCT_NAME
+                                            </a>
+                                        </td>
+                                        <td class="price-pr">
+                                            <b>Rs. @item.PRODUCT_PURCHASEPRICE</b>
+                                        </td>
+                                        <td class="quantity-box">
+                                          
+                                            <b>   @item.PRO_QUANTITY   </b>
+                                           
+
+                                        </td>
+                                        <td class="total-pr">
+                                            <b> @(decimal.Parse(item.PRODUCT_PURCHASEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()))</b>
+                                        </td>
+                                       
+                                    </tr>
+                                    row++;
+
+                                    totalQty += item.PRO_QUANTITY;
+                                    totalBill += (decimal.Parse(item.PRODUCT_PURCHASEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()));
+
+                                }
+                                Session["toalAmount"] = totalBill;
+
+                            }
+
+                           
+                        </tbody>
+                        <tfoot>
+                            <tr  style="background-color:black;color:white">
+                                <td colspan="2" align="center"><a class="btn btn-danger" href="@Url.Action("Purchase","Purchase")">For More Order..</a></td>
+                                <td></td>
+                                <td><b>@totalQty</b></td>
+                                <td><b>@totalBill</b></td>
+                                
+
+                            </tr>
+
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row my-5">
+
+            @if (Session["Order"] != null)
+            {
+                Order o = (Order)Session["Order"];
+                <div class="col-lg-6 col-sm-12">
+                    <div class="order-box">
+                        <h3>Seller Details</h3>
+                        <div class="d-flex">
+                            <h4>Seller Name</h4>
+                            <div class="ml-auto font-weight-bold">  @o.ORDER_NAME </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Seller Email</h4>
+                            <div class="ml-auto font-weight-bold"> @o.ORDER_EMAIL </div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex">
+                            <h4>Seller Contact</h4>
+                            <div class="ml-auto font-weight-bold"> @o.ORDER_CONTACT </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Seller Address</h4>
+                            <div class="ml-auto font-weight-bold"> @o.ORDER_ADDRESS </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Order Status</h4>
+                            <div class="ml-auto font-weight-bold"> Paid </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total">
+                            <h4>Thank You</h4>
+                            <div class="ml-auto h5">Your Purchase Has Been Done.</div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+
+            }
+            <div class="col-lg-6 col-sm-12">
+                <div class="order-box">
+                    <h3>Purchase summary</h3>
+                    <div class="d-flex">
+                        <h4>Sub Total</h4>
+                        <div class="ml-auto font-weight-bold"> Rs. @totalBill </div>
+                    </div>
+                   
+                    <hr>
+                    <div class="d-flex gr-total">
+                        <h5>Grand Total</h5>
+                        <div class="ml-auto h5">@totalBill </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+        </div>
+        
+
+    </div>
+</div>
+<!-- End Cart -->
+

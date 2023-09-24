@@ -1,0 +1,183 @@
+﻿@model IEnumerable<PunjabiHutProject.Models.Order>
+@using PunjabiHutProject.Models;
+@{
+    Model1 db = new Model1();
+    ViewBag.Title = "Invoice";
+}
+
+<div id="printArea">
+    <center>
+        <h2>Order Invoice</h2>
+    </center>
+
+    @foreach (var o in Model)
+    {
+        <table class="table table-responsive table-bordered table-hover">
+            <tr>
+                <td align="center" style="font-size:x-large;background-color:indianred;color:white" colspan="4">Order Detail</td>
+            </tr>
+            <tr>
+                <th>Order Number</th>
+                <td>@o.ORDER_ID</td>
+                <th>Person Name</th>
+                <td>@o.ORDER_NAME</td>
+            </tr>
+
+            <tr>
+                <th>Order Date</th>
+                <td>@DateTime.Parse(o.ORDER_DATE.ToString()).ToLongDateString()</td>
+                <th>Contact</th>
+                <td>@o.ORDER_CONTACT</td>
+            </tr>
+
+            <tr>
+                <th>Order Status</th>
+                <td>@o.ORDER_STATUS</td>
+                <th>Email</th>
+                <td>@o.ORDER_EMAIL</td>
+            </tr>
+
+            <tr>
+                <th>Order Type</th>
+                <td>@o.ORDER_TYPE</td>
+                <th>Address</th>
+                <td>@o.ORDER_ADDRESS</td>
+            </tr>
+
+        </table>
+
+        double totalAmount = 0;
+        int totalQuantity = 0;
+
+        <table class="table table-responsive table-bordered table-hover">
+
+            <tr>
+                <td align="center" style="font-size:x-large;background-color:indianred;color:white" colspan="6">Food Detail</td>
+            </tr>
+
+            <tr>
+                <th>Product Picture</th>
+                <th>Product Name</th>
+                <th>Product Discription</th>
+                <th>Product Price</th>
+                <th>Product Quantity</th>
+                <th>Product Amount</th>
+            </tr>
+
+
+            @foreach (var od in o.OrderDetails)
+            {
+
+                <tr>
+                    <td><img height="100px" width="130px" src="@Url.Content(od.Product.PRODUCT_PICTURE)"></td>
+                    <td>@od.Product.PRODUCT_NAME</td>
+                    <td>@od.Product.PRODUCT_DESCRIPTION</td>
+                    <td>
+                        @if (o.ORDER_TYPE == "Purchase")
+                        {
+                            @od.PURCHASE_PRICE
+                        }
+                        else
+                        {
+                            @od.SALE_PRICE
+                        }
+
+
+                    </td>
+                    <td>@Math.Abs(Convert.ToInt32(od.QUANTITY))</td>
+
+                    <td>
+                        @if (o.ORDER_TYPE == "Purchase")
+                        {
+                            @(double.Parse(od.PURCHASE_PRICE.ToString()) * Math.Abs(int.Parse(od.QUANTITY.ToString())))
+                        }
+                        else
+                        {
+                            @(double.Parse(od.SALE_PRICE.ToString()) * Math.Abs(int.Parse(od.QUANTITY.ToString())))
+                        }
+                    </td>
+
+                </tr>
+                totalQuantity += Math.Abs(int.Parse(od.QUANTITY.ToString()));
+
+                if (o.ORDER_TYPE == "Purchase")
+                {
+                    totalAmount += (double.Parse(od.PURCHASE_PRICE.ToString()) * Math.Abs(int.Parse(od.QUANTITY.ToString())));
+                }
+                else
+                {
+                    totalAmount += (double.Parse(od.SALE_PRICE.ToString()) * Math.Abs(int.Parse(od.QUANTITY.ToString())));
+                }
+
+
+            }
+            <tr style="font-size:medium;background-color:black;color:white">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>@totalQuantity</td>
+                <td>@totalAmount</td>
+            </tr>
+        </table>
+        Decimal? totalExtraAmount = 0;
+
+        if (o.ORDER_TYPE == "Sale")
+        {
+            <table class="table table-responsive table-bordered table-hover">
+
+                <tr>
+                    <td align="center" style="font-size:x-large;background-color:indianred;color:white" colspan="6">Extra Ingredients Detail</td>
+                </tr>
+
+                <tr>
+                    <th>Product Picture</th>
+                    <th>Product Name</th>
+                    <th>Extra Item Name</th>
+                    <th>Extra Item Price</th>
+                </tr>
+                @foreach (var oe in o.OrderExtraDetails)
+                {
+                    <tr>
+                        <td><img height="100px" width="130px" src="@Url.Content(oe.Product.PRODUCT_PICTURE)"></td>
+                        <td>@oe.Product.PRODUCT_NAME</td>
+                        <td>@oe.Extra.EXTRA_NAME</td>
+                        <td>@oe.Extra.EXTRA_SALEPRICE  </td>
+                    </tr>
+                    totalExtraAmount = totalExtraAmount + oe.Extra.EXTRA_SALEPRICE;
+                }
+                <tr style="font-size:medium;background-color:black;color:white">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>@totalExtraAmount</td>
+                </tr>
+            </table>
+
+        }
+
+    }
+
+    </div>
+    <input type="button" onclick="return PrintFunction()" value="Generate Invoice" class="btn btn-danger btn-block" />
+    <script type="text/javascript">
+        function PrintFunction()
+        {
+              var print=document.getElementById('printArea');
+
+              var printWindow=window.open(",",'height=400,width=800');
+              printWindow.document.write('<html><head><title>Div Contents</title>');
+              printWindow.document.write('</head><body>');
+              printWindow.document.write(print.innerHTML);
+              printWindow.document.write('</body></html>');
+              printWindow.document.close();
+              setTimeout(function(){
+              printWindow.print();
+              },500);
+
+
+
+              return false;
+            }
+    </script>
+

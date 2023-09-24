@@ -1,0 +1,278 @@
+﻿@using PunjabiHutProject.Models
+@{
+    Model1 db = new Model1();
+    int row = 0;
+    int Erow = 0;
+    int totalQty = 0;
+    decimal totalBill = 0;
+    decimal ExtratotalBill = 0;
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+}
+
+
+<!-- Start All Title Box -->
+<div id="printArea">
+    <div class="all-title-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Order Booked</h2>
+                    <ul class="breadcrumb">
+
+                        <li class="breadcrumb-item active">Thanks For Your Trust.</li>
+                    </ul>
+
+                </div>
+                <br />
+                <h2>  Order-ID: @db.Orders.Max(x => x.ORDER_ID) </h2>
+            </div>
+        </div>
+    </div>
+    <!-- End All Title Box -->
+    <!-- Start Cart  -->
+    <div class="cart-box-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-main table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Images</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                @if (Session["myCart"] != null)
+                                {
+
+                                    foreach (var item in (List<Product>)Session["myCart"])
+                                    {
+                                        <tr>
+                                            <td class="thumbnail-img">
+                                                <a href="#">
+                                                    <img class="img-fluid" src="@Url.Content(item.PRODUCT_PICTURE)" alt="" />
+                                                </a>
+                                            </td>
+                                            <td class="name-pr">
+                                                <a href="#" style="color:white">
+                                                    @item.PRODUCT_NAME
+                                                </a>
+                                            </td>
+                                            <td class="price-pr">
+                                                <b>Rs. @item.PRODUCT_SALEPRICE</b>
+                                            </td>
+                                            <td class="quantity-box">
+
+                                                <b>   @item.PRO_QUANTITY   </b>
+
+
+                                            </td>
+                                            <td class="total-pr">
+                                                <b> @(decimal.Parse(item.PRODUCT_SALEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()))</b>
+                                            </td>
+
+                                        </tr>
+                                        row++;
+
+                                        totalQty += item.PRO_QUANTITY;
+                                        totalBill += (decimal.Parse(item.PRODUCT_SALEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()));
+
+                                    }
+                                    Session["toalAmount"] = totalBill;
+
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td><b>@totalQty</b></td>
+                                    <td><b>@totalBill</b></td>
+                                    <td></td>
+
+                                </tr>
+
+
+                            </tfoot>
+                        </table>
+                        @if (Session["ExtraCart"] == null)
+                        {
+                    <h2 class="ml-auto btn hvr-hover btn-block" style="color:white">You Have Not chosed Any Extra Ingredients.</h2>
+                        }
+                        else
+                        {
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Images</th>
+                                        <th>Name</th>
+                                        <th>Extra Ingredients</th>
+                                        <th>Price</th>
+                                        <th></th>
+                                        <th>Total</th>
+
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                    @if (Session["ExtraCart"] != null)
+                                    {
+
+                                        foreach (var item in (List<Extra>)Session["ExtraCart"])
+                                        {
+                                            <tr>
+                                                <td class="thumbnail-img">
+                                                    <a href="#">
+                                                        <img class="img-fluid" src="@Url.Content(item.Product.PRODUCT_PICTURE)" style="height:100px; width:100px" alt="" />
+                                                    </a>
+                                                </td>
+                                                <td class="name-pr">
+                                                    <a href="#" style="color:white">
+                                                        @item.Product.PRODUCT_NAME
+                                                    </a>
+                                                </td>
+                                                <td class="name-pr">
+                                                    <a href="#" style="color:white">
+                                                        @item.EXTRA_NAME
+                                                    </a>
+                                                </td>
+                                                <td class="price-pr">
+                                                    <b>Rs. @item.EXTRA_SALEPRICE</b>
+                                                </td>
+                                                <td></td>
+                                                <td class="total-pr">
+                                                    <b> @item.EXTRA_SALEPRICE</b>
+                                                </td>
+
+                                            </tr>
+                                            Erow++;
+
+
+                                            ExtratotalBill += (decimal.Parse(item.EXTRA_SALEPRICE.ToString()));
+
+                                        }
+                                        Session["ExtratoalAmount"] = ExtratotalBill;
+
+                                    }
+
+                                   
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" ></td>
+                                        <td></td>
+                                        <td><b></b></td>
+                                        <td><b>@ExtratotalBill</b></td>
+                                        <td></td>
+
+                                    </tr>
+
+
+                                </tfoot>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row my-5">
+
+                @if (Session["Order"] != null)
+                {
+                    Order o = (Order)Session["Order"];
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="order-box">
+                            <h3>Customer Details</h3>
+                            <div class="d-flex">
+                                <h4>Customer Name</h4>
+                                <div class="ml-auto font-weight-bold">  @o.ORDER_NAME </div>
+                            </div>
+                            <div class="d-flex">
+                                <h4>Customer Email</h4>
+                                <div class="ml-auto font-weight-bold"> @o.ORDER_EMAIL </div>
+                            </div>
+                            <hr class="my-1">
+                            <div class="d-flex">
+                                <h4>Customer Contact</h4>
+                                <div class="ml-auto font-weight-bold"> @o.ORDER_CONTACT </div>
+                            </div>
+                            <div class="d-flex">
+                                <h4>Customer Address</h4>
+                                <div class="ml-auto font-weight-bold"> @o.ORDER_ADDRESS </div>
+                            </div>
+                            <div class="d-flex">
+                                <h4>Order Status</h4>
+                                <div class="ml-auto font-weight-bold">@o.ORDER_STATUS</div>
+                            </div>
+                            <hr>
+                            <div class="d-flex gr-total">
+                                <h5>Thank You</h5>
+                                <div class="ml-auto h5">Your Order Has Been Booked.</div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+
+                }
+                <div class="col-lg-6 col-sm-12">
+                    <div class="order-box">
+                        <h3>Order summary</h3>
+                        <div class="d-flex">
+                            <h4>Sub Total</h4>
+                            <div class="ml-auto font-weight-bold"> Rs. @(totalBill+ExtratotalBill) </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Discount</h4>
+                            <div class="ml-auto font-weight-bold"> Rs.0 </div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex">
+                            <h4>Coupon Discount</h4>
+                            <div class="ml-auto font-weight-bold"> Rs.0 </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Tax</h4>
+                            <div class="ml-auto font-weight-bold"> Rs.0 </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>Shipping Cost</h4>
+                            <div class="ml-auto font-weight-bold"> Free </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total">
+                            <h5>Grand Total</h5>
+                            <div class="ml-auto h5">@(totalBill+ExtratotalBill) </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                <div class="col-12 d-flex shopping-box">
+                <a type="submit" class="ml-auto btn hvr-hover"  style="color:white" href="@Url.Action("CloseOrder","Home")">Close Order</a>
+                </div>
+            </div>
+
+
+        </div>
+        <input type="button" onclick="return PrintFunction()" value="Print Reporte" class="ml-auto btn hvr-hover btn-block" style="color:white" />
+    </div>
+   </div>
+    <!-- End Cart -->
+    <script type="text/javascript">
+        function PrintFunction() {
+            window.print();
+            return false;
+        }
+    </script>
+

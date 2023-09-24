@@ -1,0 +1,36 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+}
+
+@using (Html.BeginForm("Login", "Customers", FormMethod.Post))
+
+{
+
+    <center>
+
+        <table width="30%" class="table-bordered table-hover table-dark">
+
+            <tr>
+                <td align="center" colspan="2" style="color:whitesmoke;font-size:x-large"><b>Customer Sign In</b> </td>
+            </tr>
+
+            <tr>
+                <td align="center">EMAIL:</td>
+                <td><input name="CUSTOMER_EMAIL" type="email" /></td>
+            </tr>
+            <tr>
+                <td align="center">PASSWARD:</td>
+                <td><input name="CUSTOMER_PASSWORD" type="password" /></td>
+            </tr>
+            <tr>
+                <td align="center" style="color:red;font-size:large" colspan="2">@ViewBag.Message</td>
+            </tr>
+            <tr>
+                <td align="center" colspan="2"> <input type="submit" value="Sign In" class="ml-auto btn hvr-hover btn-block" style="color:white" /></td>
+            </tr>
+
+        </table>
+    </center>
+}
+
+

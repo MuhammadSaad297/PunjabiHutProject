@@ -1,0 +1,51 @@
+﻿@model IEnumerable<PunjabiHutProject.Models.Extra>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Product.PRODUCT_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EXTRA_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EXTRA_SALEPRICE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EXTRA_PURCHASEPRICE)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Product.PRODUCT_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EXTRA_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EXTRA_SALEPRICE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EXTRA_PURCHASEPRICE)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.EXTRA_ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.EXTRA_ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.EXTRA_ID })
+        </td>
+    </tr>
+}
+
+</table>

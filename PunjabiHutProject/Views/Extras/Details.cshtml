@@ -1,0 +1,50 @@
+﻿@model PunjabiHutProject.Models.Extra
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Extra</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.PRODUCT_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Product.PRODUCT_NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EXTRA_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EXTRA_NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EXTRA_SALEPRICE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EXTRA_SALEPRICE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EXTRA_PURCHASEPRICE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EXTRA_PURCHASEPRICE)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EXTRA_ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

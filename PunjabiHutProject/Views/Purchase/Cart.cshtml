@@ -1,0 +1,180 @@
+﻿@using PunjabiHutProject.Models
+
+@{
+    int row = 0;
+    int totalQty = 0;
+    decimal totalBill = 0;
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<!-- Start All Title Box -->
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Purchase Cart</h2>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End All Title Box -->
+<!-- Start Cart  -->
+<div class="cart-box-main">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="table-main table-responsive">
+                    <table class="table table-bordered table-dark table-hover">
+                        <thead>
+                            <tr align="center" style="background-color:indianred;color:white">
+                                <th>Images</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>  Remove</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            @if (Session["myCart"] != null)
+                            {
+
+                                foreach (var item in (List<Product>)Session["myCart"])
+                                {
+                                    <tr>
+                                        <td class="thumbnail-img">
+                                            <a href="#">
+                                                <img class="img-fluid" src="@Url.Content(item.PRODUCT_PICTURE)" style="height:100px; width:100px" alt="" />
+                                            </a>
+                                        </td>
+                                        <td class="name-pr">
+                                            <a href="#" style="color:black">
+                                                @item.PRODUCT_NAME
+                                            </a>
+                                        </td>
+                                        <td class="price-pr">
+                                            <b>Rs. @item.PRODUCT_PURCHASEPRICE</b>
+                                        </td>
+                                        <td class="quantity-box">
+                                            <a href="@Url.Action("MinusFromCart", "Purchase", new { RowNo = row })" class="btn btn-danger fa fa-minus"> </a>
+                                            <b>   @item.PRO_QUANTITY   </b>
+                                            <a href="@Url.Action("PlusFromCart", "Purchase", new { RowNo = row })" class="btn btn-primary fa fa-plus"> </a>
+
+                                        </td>
+                                        <td class="total-pr">
+                                            <b> @(decimal.Parse(item.PRODUCT_PURCHASEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()))</b>
+                                        </td>
+                                        <td class="remove-pr">
+                                            <a href="@Url.Action("RemoveFromCart", "Purchase", new { RowNo = row })">
+                                                <i style="color:black " class="glyphicon glyphicon-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    row++;
+
+                                    totalQty += item.PRO_QUANTITY;
+                                    totalBill += (decimal.Parse(item.PRODUCT_PURCHASEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()));
+
+                                }
+                                Session["toalAmount"] = totalBill;
+
+                            }
+
+                            @if (Session["myCart"] == null || row == 0)
+                            {
+                                <tr>
+                                    <td colspan="6" align="center">
+
+                                        <b style="color:red ;font-size:larger">
+
+                                            Your Purchase Cart Is Empty......<a href="@Url.Action("Purchase", "Purchase")" style="color:black">Click Here To Purchase Foods.</a>
+                                        </b>
+
+
+
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr style="background-color:black;color:white">
+                                <td colspan="3" align="center"><a class="btn btn-danger" href="@Url.Action("Purchase","Purchase")">For More Purchase..</a></td>
+                                <td></td>
+                                <td><b>@totalQty</b></td>
+                                <td><b>@totalBill</b></td>
+                                
+
+                            </tr>
+
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        @using (Html.BeginForm("PurchaseNow", "Purchase"))
+
+        {
+            <div class="row my-5">
+                <div class="col-lg-6 col-sm-12">
+                    <div class="order-box">
+                        <h3>Seller Detail!</h3>
+                        <div class="d-flex">
+                            <input name="ORDER_NAME" type="text" required placeholder="Enter Seller Name." class="form-control" />
+                        </div>
+                        <br />
+
+
+                        <div class="d-flex">
+                            <input name="ORDER_CONTACT" type="text" required placeholder="Enter Seller Contect Number." class="form-control" />
+                        </div>
+                        <br />
+                        <div class="d-flex">
+                            <input name="ORDER_EMAIL" type="email" required placeholder="Enter Seller Email." class="form-control" />
+                        </div>
+                        <br />
+                        <div class="d-flex">
+                            <textarea name="ORDER_ADDRESS" type="text" required placeholder="Enter Seller Address." class="form-control"></textarea>
+                        </div>
+
+
+                        <hr>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="order-box">
+                        <h3>Purchase summary</h3>
+                        <div class="d-flex">
+                            <h4>Sub Total</h4>
+                            <div class="ml-auto font-weight-bold"> Rs. @totalBill </div>
+                        </div>
+                      
+                        <hr>
+                        <div class="d-flex gr-total">
+                            <h5>Grand Total</h5>
+                            <div class="ml-auto h5">@totalBill </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                <div class="col-12 d-flex shopping-box"><input type="submit" class="ml-auto btn hvr-hover" value="Purchase Now"> </div>
+            </div>
+        }
+
+    </div>
+</div>
+<!-- End Cart -->
+
+<script type="text/javascript">
+    window.onload = function () { window.scrollBy(0, 180); }
+
+</script>

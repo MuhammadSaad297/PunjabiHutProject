@@ -1,0 +1,331 @@
+﻿@using PunjabiHutProject.Models
+
+@{
+    int row = 0;
+    int Erow = 0;
+    int totalQty = 0;
+    decimal totalBill = 0;
+    decimal ExtratotalBill = 0;
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+}
+
+
+<!-- Start All Title Box -->
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Cart</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                    <li class="breadcrumb-item active">Cart</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End All Title Box -->
+<!-- Start Cart  -->
+<div class="cart-box-main">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-main table-responsive">
+                    <table class="table table-bordered table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Images</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>  Remove</th>
+                                <th align="center">Add Extra Ingredients</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            @if (Session["myCart"] != null)
+                            {
+
+                                foreach (var item in (List<Product>)Session["myCart"])
+                                {
+                            <tr>
+                                <td class="thumbnail-img">
+                                    <a href="#">
+                                        <img class="img-fluid" src="@Url.Content(item.PRODUCT_PICTURE)" style="height:100px; width:100px" alt="" />
+                                    </a>
+                                </td>
+                                <td class="name-pr">
+                                    <a href="#" style="color:white">
+                                        @item.PRODUCT_NAME
+                                    </a><br />
+                                    <h4 style="color:white">Available: <b>@item.OrderDetails.Sum(x => x.QUANTITY)</b></h4>
+                                </td>
+                                <td class="price-pr">
+                                    <b>Rs. @item.PRODUCT_SALEPRICE</b>
+                                </td>
+                                <td class="quantity-box">
+                                    <a href="@Url.Action("MinusFromCart", "Home", new { RowNo = row })" class="btn btn-danger fa fa-minus"> </a>
+                                    <b>   @item.PRO_QUANTITY   </b>
+                                    <a href="@Url.Action("PlusFromCart", "Home", new { RowNo = row })" class="btn btn-primary fa fa-plus"> </a>
+
+                                </td>
+                                <td class="total-pr">
+                                    <b> @(decimal.Parse(item.PRODUCT_SALEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()))</b>
+                                </td>
+                                <td class="remove-pr">
+                                    <a href="@Url.Action("RemoveFromCart", "Home", new { RowNo = row })">
+                                        <i style="color:white" class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                                <td  align="center"><a class="btn btn-danger" href="@Url.Action("Extra","Home",new { id = item.PRODUCT_ID })">Add Extra Ingredients</a></td>
+                            </tr>
+                                    row++;
+
+                                    totalQty += item.PRO_QUANTITY;
+                                    totalBill += (decimal.Parse(item.PRODUCT_SALEPRICE.ToString()) * int.Parse(item.PRO_QUANTITY.ToString()));
+
+                                }
+                                Session["toalAmount"] = totalBill;
+
+                            }
+
+                            @if (Session["myCart"] == null || row == 0)
+                            {
+                                <tr>
+                                    <td colspan="6" align="center">
+
+                                        <b style="color:red ;font-size:larger">
+
+                                            Your Cart Is Empty......<a href="@Url.Action("Shop", "Home")" style="color:white">Click Here To Add Foods.</a>
+                                        </b>
+
+
+
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" align="center"><a class="btn btn-danger" href="@Url.Action("Shop","Home")">For More Order..</a></td>
+                                <td></td>
+                                <td><b>@totalQty</b></td>
+                                <td><b>@totalBill</b></td>
+                                <td></td>
+
+                            </tr>
+
+
+                        </tfoot>
+                    </table>
+                    <table class="table table-bordered table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Images</th>
+                                <th>Name</th>
+                                <th>Extra Ingredients</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>  Remove</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            @if (Session["ExtraCart"] != null)
+                            {
+
+                                foreach (var item in (List<Extra>)Session["ExtraCart"])
+                                {
+                            <tr>
+                                <td class="thumbnail-img">
+                                    <a href="#">
+                                        <img class="img-fluid" src="@Url.Content(item.Product.PRODUCT_PICTURE)" style="height:100px; width:100px" alt="" />
+                                    </a>
+                                </td>
+                                <td class="name-pr">
+                                    <a href="#" style="color:white">
+                                        @item.Product.PRODUCT_NAME
+                                    </a>
+                                </td>
+                                <td class="name-pr">
+                                    <a href="#" style="color:white">
+                                        @item.EXTRA_NAME
+                                    </a>
+                                </td>
+                                <td class="price-pr">
+                                    <b>Rs. @item.EXTRA_SALEPRICE</b>
+                                </td>
+                                <td class="total-pr">
+                                    <b> @item.EXTRA_SALEPRICE</b>
+                                </td>
+                                <td class="remove-pr">
+                                    <a href="@Url.Action("RemoveFromExtraCart", "Home", new { ERowNo = Erow })">
+                                        <i style="color:white" class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                                    Erow++;
+
+                                    
+                                    ExtratotalBill += (decimal.Parse(item.EXTRA_SALEPRICE.ToString())) ;
+
+                                }
+                                Session["ExtratoalAmount"] = ExtratotalBill;
+
+                            }
+
+                            @if (Session["ExtraCart"] == null || Erow == 0)
+                            {
+                                <tr>
+                                    <td colspan="6" align="center">
+
+                                        <b style="color:red ;font-size:larger">
+
+                                            Your Extra Ingredients Cart Is Empty......
+                                        </b>
+
+
+
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td></td>
+                                <td><b>@ExtratotalBill</b></td>
+                                <td><b></b></td>
+                                
+
+                            </tr>
+
+
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+
+
+        @using (Html.BeginForm("PayNow", "Home"))
+
+        {
+    <div class="row my-5">
+        <div class="col-lg-6 col-sm-12">
+            @if (Session["Customer"] != null)
+            {
+                Customer c = (Customer)Session["Customer"];
+
+                <div class="order-box">
+                    <h3>Costumer Detail!</h3>
+                    <div class="d-flex">
+                        <input name="ORDER_NAME" type="text" value="@c.CUSTOMER_NAME" required placeholder="Enter Costumer Name." class="form-control" />
+                    </div>
+                    <br />
+
+
+                    <div class="d-flex">
+                        <input name="ORDER_CONTACT" type="text" value="@c.CUSTOMER_CONTACT" required placeholder="Enter Costumer Contect Number." class="form-control" />
+                    </div>
+                    <br />
+                    <div class="d-flex">
+                        <input name="ORDER_EMAIL" type="email" value="@c.CUSTOMER_EMAIL" required placeholder="Enter Costumer Email." class="form-control" />
+                    </div>
+                    <br />
+                    <div class="d-flex">
+                        <textarea name="ORDER_ADDRESS" type="text" required placeholder="Enter Costumer Address." class="form-control">@c.CUSTOMER_ADDRESS</textarea>
+                    </div>
+
+
+                    <hr>
+                </div>
+
+            }
+            else
+            {
+                <div class="order-box">
+                    <h3>Costumer Detail!</h3>
+                    <div class="d-flex">
+                        <input name="ORDER_NAME" type="text"  required placeholder="Enter Costumer Name." class="form-control" />
+                    </div>
+                    <br />
+
+
+                    <div class="d-flex">
+                        <input name="ORDER_CONTACT" type="text"  required placeholder="Enter Costumer Contect Number." class="form-control" />
+                    </div>
+                    <br />
+                    <div class="d-flex">
+                        <input name="ORDER_EMAIL" type="email" required placeholder="Enter Costumer Email." class="form-control" />
+                    </div>
+                    <br />
+                    <div class="d-flex">
+                        <textarea name="ORDER_ADDRESS" type="text" required placeholder="Enter Costumer Address." class="form-control"></textarea>
+                    </div>
+
+
+                    <hr>
+                </div>
+            }
+
+        </div>
+        <div class="col-lg-6 col-sm-12">
+            <div class="order-box">
+                <h3>Order summary</h3>
+                <div class="d-flex">
+                    <h4>Sub Total</h4>
+                    <div class="ml-auto font-weight-bold"> Rs. @(totalBill+ExtratotalBill) </div>
+                </div>
+                <div class="d-flex">
+                    <h4>Discount</h4>
+                    <div class="ml-auto font-weight-bold"> Rs.0 </div>
+                </div>
+                <hr class="my-1">
+                <div class="d-flex">
+                    <h4>Tax</h4>
+                    <div class="ml-auto font-weight-bold"> Rs.0 </div>
+                </div>
+                <div class="d-flex">
+                    <h4>Shipping Cost</h4>
+                    <div class="ml-auto font-weight-bold"> Free </div>
+                </div>
+                <div class="d-flex">
+                    <h4>Payment Mode</h4>
+                    <div class="ml-auto font-weight-bold">
+                        <input type="radio" value="Cash On Delivery" name="ORDER_STATUS" checked="checked" /> Cash On Delivery
+                        <input type="radio" value="Paid" name="ORDER_STATUS" /> Pay With Paypal
+                    </div>
+                </div>
+                <hr>
+                <div class="d-flex gr-total">
+                    <h5>Grand Total</h5>
+                    <div class="ml-auto h5">@(totalBill+ExtratotalBill) </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+        @if (Session["myCart"] != null)
+        {
+            <div class="col-12 d-flex shopping-box"><input type="submit" class="ml-auto btn hvr-hover" value="Pay Now" style="color:white"> </div>
+        }
+    </div>
+        }
+
+    </div>
+</div>
+<!-- End Cart -->
+
+<script type="text/javascript">
+    window.onload = function () { window.scrollBy(0, 180); }
+
+</script>
